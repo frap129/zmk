@@ -326,7 +326,6 @@ const LV_ATTRIBUTE_MEM_ALIGN LV_ATTRIBUTE_LARGE_CONST LV_ATTRIBUTE_IMG_BRANDOFSA
 
 const lv_img_dsc_t BrandOfSacrifice = {
     .header.cf = LV_COLOR_FORMAT_I1,
-    .header.reserved = 0,
     .header.w = 140,
     .header.h = 68,
     .data_size = 1232,
