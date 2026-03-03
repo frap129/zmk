@@ -281,7 +281,7 @@ Make sure that the `transform` property uses the same label as your matrix trans
 
 ## Building the Firmware
 
-Add the appropriate lines to your `build.yml` file to build the firmware for your dongle. Also add some CMake arguments using `cmake-args` to the existing parts of your keyboard, turning them into peripherals for your dongle.[^2]
+Add the appropriate lines to your `build.yaml` file to build the firmware for your dongle. Also add some CMake arguments using `cmake-args` to the existing parts of your keyboard, turning them into peripherals for your dongle.[^2]
 
 ```yaml
 include:
@@ -289,12 +289,12 @@ include:
   # Your other keyboard parts here
   # -----------------------------------------
   # Change the board appropriately, you can use any board
-  - board: nice_nano_v2
+  - board: nice_nano
     shield: my_keyboard_dongle
-  - board: nice_nano_v2
+  - board: nice_nano
     shield: settings_reset
   # Add these cmake-args to the peripherals you wish to use with the dongle
-  - board: nice_nano_v2
+  - board: nice_nano
     shield: my_keyboard
     cmake-args: -DCONFIG_ZMK_SPLIT=y -DCONFIG_ZMK_SPLIT_ROLE_CENTRAL=n
 ```
@@ -310,4 +310,5 @@ To use your dongled keyboard with [ZMK Studio](../../features/studio.md), apply 
 If you ever want to "undongle" your keyboard, simply remove these CMake arguments and flash the resulting firmware (after a `settings_reset`).
 
 [^1]: If you have a custom dongle that uses an onboard MCU, then you will need to take a slightly different approach that isn't currently documented.
+
 [^2]: If you are building locally, you can append these flags to the end of the [build command](../local-toolchain/build-flash.mdx#cmake-arguments).

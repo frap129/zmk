@@ -1,0 +1,5 @@
+board:
+  name: pillbug
+  variants:
+    - name: zmk
+      qualifier: nrf52840

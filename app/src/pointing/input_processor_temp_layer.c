@@ -72,10 +72,10 @@ static void update_layer_state(struct temp_layer_state *state, bool activate) {
 
     state->is_active = activate;
     if (activate) {
-        zmk_keymap_layer_activate(state->toggle_layer);
+        zmk_keymap_layer_activate(state->toggle_layer, false);
         LOG_DBG("Layer %d activated", state->toggle_layer);
     } else {
-        zmk_keymap_layer_deactivate(state->toggle_layer);
+        zmk_keymap_layer_deactivate(state->toggle_layer, false);
         LOG_DBG("Layer %d deactivated", state->toggle_layer);
     }
 }
@@ -134,9 +134,6 @@ static int handle_layer_state_changed(const struct device *dev, const zmk_event_
     if (ret < 0) {
         return ret;
     }
-    if (data->state.toggle_layer == 0) {
-        return ZMK_EV_EVENT_BUBBLE;
-    }
     if (!zmk_keymap_layer_active(zmk_keymap_layer_index_to_id(data->state.toggle_layer))) {
         LOG_DBG("Deactivating layer that was activated by this processor");
         data->state.is_active = false;
@@ -190,7 +187,7 @@ static int handle_keycode_state_changed(const struct device *dev, const zmk_even
         return ret;
     }
 
-    LOG_DBG("Setting last_tapped_timestamp to: %d", ev->timestamp);
+    LOG_DBG("Setting last_tapped_timestamp to: %lld", ev->timestamp);
     data->state.last_tapped_timestamp = ev->timestamp;
 
     ret = k_mutex_unlock(&data->lock);
@@ -255,7 +252,11 @@ static int temp_layer_handle_event(const struct device *dev, struct input_event 
         struct layer_state_action action = {.layer = param1, .activate = true};
 
         int ret = k_msgq_put(&temp_layer_action_msgq, &action, K_MSEC(10));
-        k_work_submit(&layer_action_work);
+        if (ret < 0) {
+            LOG_ERR("Failed to enqueue action to enable layer %d (%d)", param1, ret);
+        } else {
+            k_work_submit(&layer_action_work);
+        }
     }
 
     if (param2 > 0) {
